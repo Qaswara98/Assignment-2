@@ -3,16 +3,10 @@
 // Define parameters
 params.inputFile = null // User must provide the input file
 params.cutoff = null    // User must provide the GC content cutoff
-params.outdir = 'output' // Output directory
 
 process filterGC {
-    publishDir {
-        path = "${params.outdir}"
-        mode = "copy"
-    }
-
     input:
-    path fastaFile
+    path fastaFile from params.inputFile
 
     output:
     path 'output.txt' into resultsChannel
@@ -24,7 +18,7 @@ process filterGC {
       import sys
 
       def calc_gc(seq):
-          # Calculate GC content
+          // Calculate GC content
           return (seq.count('G') + seq.count('C')) / float(len(seq))
 
       // Check if the input file exists
@@ -53,4 +47,3 @@ workflow {
     Channel.fromPath(params.inputFile) | filterGC
     resultsChannel.view { "Results written to ${it}" }
 }
-
