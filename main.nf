@@ -51,6 +51,6 @@ process filterGC {
 // Define the workflow
 workflow {
   inputFile = Channel.fromPath(params.input)
-  GCcontent(inputFile)
+  GC_content(inputFile)
 }
 
