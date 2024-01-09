@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%post
+  export TZ=Europe DEBIAN_FRONTEND=noninteractive
+  cd /root
+  apt-get update -qq && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    build-essential \
+    dirmngr \
+    gnupg \
+    libcurl4-openssl-dev \
+    libgpgme11-dev \
+    libnetcdf-dev \
+    libseccomp-dev \
+    libssl-dev \
+    libxml2-dev \
+    nano \
+    pkg-config \
+    software-properties-common \
+    squashfs-tools \
+    uuid-dev \
+    vim \
+    wget \
+    python3 \
+    python3-pip
+    
+  wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+  apt-get install -y r-base
