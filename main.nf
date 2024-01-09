@@ -15,7 +15,7 @@ process filterGC {
     path fastaFile
 
     output:
-    path 'output.txt' into resultsChannel
+    path 'output.txt' 
 
     script:
     """
@@ -50,7 +50,7 @@ process filterGC {
 
 // Define the workflow
 workflow {
-    Channel.fromPath(params.inputFile) | filterGC
-    resultsChannel.view { "Results written to ${it}" }
+  inputFile = Channel.fromPath(params.input)
+  GCcontent(inputFile)
 }
 
