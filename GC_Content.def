@@ -25,8 +25,13 @@ From: ubuntu:latest
     vim \
     wget \
     python3 \
-    python3-pip
-    
-  wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
-  apt-get install -y r-base
+    python3-pip \
+    default-jre \
+    unzip
+
+  # Install Nextflow
+  curl -s https://get.nextflow.io | bash
+  mv nextflow /usr/local/bin/
+
+  # Install BioPython
+  pip3 install biopython
