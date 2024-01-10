@@ -9,7 +9,7 @@ Channel
 
 process filterByGCContent {
     input:
-        path fasta from fastaFile
+        path fastaFile
 
     output:
         path 'output.txt'
@@ -19,7 +19,7 @@ process filterByGCContent {
     #!/usr/bin/env python3
     from Bio import SeqIO
     with open('output.txt', 'w') as out:
-        for record in SeqIO.parse('${fasta}', 'fasta'):
+        for record in SeqIO.parse('${fastaFile}', 'fasta'):
             seq = str(record.seq)
             gc_content = (seq.count('G') + seq.count('C')) / len(seq)
             if gc_content > ${params.cutoff}:
