@@ -1,51 +1,32 @@
 #!/usr/bin/env nextflow
 
-// Define parameters
-params.inputFile = null // User must provide the input file
-params.cutoff = null    // User must provide the GC content cutoff
+params.inputFile = null
+params.cutoff = null
 
-// Create input channel
-inputChannel = Channel.fromPath(params.inputFile)
+Channel
+    .fromPath(params.inputFile)
+    .set{ fastaFile }
 
-process filterGC {
+process filterByGCContent {
     input:
-    path fastaFile from inputChannel
+        path fasta from fastaFile
 
     output:
-    path 'output.txt'
+        path 'output.txt'
 
     script:
     """
-    #!/usr/bin/env python
-    import os
-    import sys
-
-    def calc_gc(seq):
-        # Calculate GC content
-        return (seq.count('G') + seq.count('C')) / float(len(seq))
-
-    # Check if the input file exists
-    if not os.path.exists("$fastaFile"):
-        sys.exit("FASTA file not found")
-
-    # Check if cutoff is a valid number
-    try:
-        cutoff = float(${params.cutoff})
-    except ValueError:
-        sys.exit("Invalid cutoff value")
-
-    with open("$fastaFile", "r") as f, open("output.txt", "w") as out:
-        for line in f:
-            if line.startswith(">"):
-                header = line.strip()
-            else:
-                seq = line.strip()
-                if calc_gc(seq) > cutoff:
-                    out.write(f"{header}\\n{seq}\\n")
+    #!/usr/bin/env python3
+    from Bio import SeqIO
+    with open('output.txt', 'w') as out:
+        for record in SeqIO.parse('${fasta}', 'fasta'):
+            seq = str(record.seq)
+            gc_content = (seq.count('G') + seq.count('C')) / len(seq)
+            if gc_content > ${params.cutoff}:
+                SeqIO.write(record, out, 'fasta')
     """
 }
 
-// Define the workflow
 workflow {
-    filterGC(inputChannel)
+    filterByGCContent(fastaFile)
 }
